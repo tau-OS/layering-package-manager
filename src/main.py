@@ -1,16 +1,22 @@
 import click
 
-@click.command()
+@click.group()
+@click.version_option("0.1.0")
+def cli():
+    """Layered Package Manager"""
+
+@cli.command()
+def sync():
+    click.echo("Test!")
+
+@cli.command()
 @click.option('--name', prompt='Your name',
               help='The person to greet.')
-@click.version_option("0.1.0")
-
-def hello(count, name):
-    """Layered Package Manager"""
+def hello(name):
     click.echo(f"Hello {name}!")
 
 def main():
-    hello()
+    cli()
 
 if __name__ == '__main__':
-    hello()
+    cli()
