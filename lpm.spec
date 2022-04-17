@@ -34,8 +34,12 @@ Thing
 # %{__python3} setup.py test                                                      
 
 %files
-# %doc CHANGELOG
+%doc README.md
 %license LICENSE
 %{_bindir}/%{modname}
 %{python3_sitelib}/%{modname}/
 %{python3_sitelib}/%{modname}-%{version}*
+
+%changelog
+* Sun Apr 17 2022 Jamie Murphy <jamie@fyralabs.com> - 0.0.1-1
+- Initial Release
