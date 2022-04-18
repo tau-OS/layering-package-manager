@@ -15,15 +15,11 @@ def format_transaction_summary():
         exit()
 
     table = Table(title="Transaction Summary", expand=True)
-    colour = "green"
     total_download_size = 0
     total_installed_size = 0
     transaction_type = ""
 
-    if base.transaction.remove_set:
-        colour = "red"
-
-    table.add_column("Package", justify="right", style=colour)
+    table.add_column("Package", justify="right")
     table.add_column("Version", style="cyan")
     table.add_column("Architecture", style="yellow")
     table.add_column("Repo", style="magenta")
@@ -34,7 +30,7 @@ def format_transaction_summary():
         table.add_row("[white]Packages to install:[/white]", "", "", "", "")
         table.add_row("", "", "", "", "")
         for pkg in base.transaction.install_set:
-            table.add_row(pkg.name, pkg.version, pkg.arch, pkg.reponame, HumanBytes.format(pkg.downloadsize))
+            table.add_row(f"[green]{pkg.name}[/green]", pkg.version, pkg.arch, pkg.reponame, HumanBytes.format(pkg.downloadsize))
             total_download_size += pkg.downloadsize
             total_installed_size += pkg.installsize
     if base.transaction.remove_set:
@@ -42,7 +38,7 @@ def format_transaction_summary():
         table.add_row("[white]Packages to remove:[/white]", "", "", "", "")
         table.add_row("", "", "", "", "")
         for pkg in base.transaction.remove_set:
-            table.add_row(pkg.name, pkg.version, pkg.arch, pkg.reponame, HumanBytes.format(pkg.installsize))
+            table.add_row(f"[red]{pkg.name}[/red]", pkg.version, pkg.arch, pkg.reponame, HumanBytes.format(pkg.installsize))
             total_installed_size += pkg.installsize
 
     console.print(table)

@@ -4,6 +4,7 @@ from lpm.commands.search import command_search
 from lpm.commands.info import command_info
 from lpm.commands.install import command_install
 from lpm.commands.remove import command_remove
+from lpm.commands.update import command_update
 from lpm import dnf as dnf_utils
 import dnf
 
@@ -67,3 +68,9 @@ def rollback():
     """Revert to the previously booted tree.\n
     With the override flag, this resets the base layer"""
     click.echo("Test")
+
+@cli.command()
+@click.argument('package', required=False)
+def update(package):
+    """Upgrade a single package or all the packages on your system"""
+    command_update(package)

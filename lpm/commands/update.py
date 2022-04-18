@@ -6,16 +6,19 @@ console = Console()
 error_console = Console(stderr=True, style="bold red")
 base = dnf.base
 
-def command_install(package_name):
-    query = base.sack.query()
-    results = query.installed()
-    results = results.filter(name=package_name)
+def command_update(package_name):
+    if package_name:
+        query = base.sack.query()
+        results = query.installed()
+        results = results.filter(name=package_name)
 
-    if results:
-        error_console.print(f"Package [italic]{package_name}[/italic] is already installed")
-        exit()
+        if not results:
+            error_console.print(f"Package [italic]{package_name}[/italic] is not installed")
+            exit()
 
-    base.install(package_name, strict=True)
+        base.upgrade(package_name)
+    else:
+        base.upgrade_all()
 
     try:
         base.resolve()

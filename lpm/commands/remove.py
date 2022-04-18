@@ -1,7 +1,6 @@
 from rich.console import Console
 from lpm import dnf as dnf_utils
 from lpm.handlers.format_transaction import format_transaction_summary
-from lpm.utils import HumanBytes
 import dnf
 
 console = Console()
