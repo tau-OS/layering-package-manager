@@ -1,12 +1,17 @@
 import click
 from rich.console import Console
+from lpm.commands.search import command_search
+from lpm import dnf
 
 console = Console()
+error_console = Console(stderr=True, style="bold red")
 
 @click.group()
 @click.option('--override', help="Perform transaction on the base layer", is_flag=True)
+@click.option('--disablerepo', help="Temporarily disable active repositories for the purpose of the current lpm command.", multiple=True)
 @click.version_option("0.1.0")
-def cli(override):
+def cli(override, disablerepo):
+    """Layered Package Manager"""
     if override:
         # TODO this should be able to be disabled with something like --override=true
         console.print("[bold red]WARNING![/bold red] The [italic]--override[/italic] flag makes changes to your base system." , style="bold")
@@ -14,7 +19,18 @@ def cli(override):
         click.confirm('Do you understand?', abort=True)
 
         click.echo("Using base layer")
-    """Layered Package Manager"""
+
+    if disablerepo:
+        for repo in disablerepo:
+            repos = dnf.base.repos.get_matching(repo)
+            if repos == []:
+                error_console.print(f"Repo [italic]{repo}[/italic] not found")
+                exit()
+            repos.disable()
+        console.print(f"Repos Disabled: {','.join([str(i) for i in disablerepo])}", style="bold red")
+
+    # THIS MUST BE LAST
+    dnf.base.fill_sack()
 
 @cli.command()
 def install():
@@ -27,9 +43,10 @@ def remove():
     click.echo("Test!")
 
 @cli.command()
-def search():
+@click.argument('keyword')
+def search(keyword):
     """Search package details for the given string"""
-    click.echo("Test!")
+    command_search(keyword)
 
 @cli.command()
 def info():
