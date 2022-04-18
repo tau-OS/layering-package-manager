@@ -3,6 +3,7 @@ from rich.console import Console
 from lpm.commands.search import command_search
 from lpm.commands.info import command_info
 from lpm.commands.install import command_install
+from lpm.commands.remove import command_remove
 from lpm import dnf as dnf_utils
 import dnf
 
@@ -44,9 +45,10 @@ def install(package):
     command_install(package)
 
 @cli.command()
-def remove():
+@click.argument('package')
+def remove(package):
     """Remove overlayed packages"""
-    click.echo("Test!")
+    command_remove(package)
 
 @cli.command()
 @click.argument('keyword')
