@@ -1,6 +1,8 @@
 import dnf
 
 # TODO this really really needs to use rich.progress
+# https://dnf.readthedocs.io/en/latest/api_callback.html
+# https://rich.readthedocs.io/en/latest/progress.html
 class ProgressMetre(dnf.callback.DownloadProgress):
     """Multi-file download progess metre"""
 
