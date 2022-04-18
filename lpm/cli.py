@@ -1,7 +1,9 @@
 import click
 from rich.console import Console
 from lpm.commands.search import command_search
-from lpm import dnf
+from lpm.commands.info import command_info
+from lpm import dnf as dnf_utils
+import dnf
 
 console = Console()
 error_console = Console(stderr=True, style="bold red")
@@ -30,7 +32,7 @@ def cli(override, disablerepo):
         console.print(f"Repos Disabled: {','.join([str(i) for i in disablerepo])}", style="bold red")
 
     # THIS MUST BE LAST
-    dnf.base.fill_sack()
+    dnf_utils.base.fill_sack()
 
 @cli.command()
 def install():
@@ -49,9 +51,10 @@ def search(keyword):
     command_search(keyword)
 
 @cli.command()
-def info():
+@click.argument('package')
+def info(package):
     """Display details about a package or group of packages"""
-    click.echo("Test!")
+    command_info(package)
 
 @cli.command()
 def rollback():
