@@ -8,7 +8,7 @@ error_console = Console(stderr=True, style="bold red")
 
 @click.group()
 @click.option('--override', help="Perform transaction on the base layer", is_flag=True)
-@click.option('--disablerepo', help="Temporarily disable active repositories for the purpose of the current lpm command.", multiple=True)
+@click.option('--disablerepo', help="Temporarily disable active repositories for the purpose of the current lpm command.", multiple=True, metavar="<repo>")
 @click.version_option("0.1.0")
 def cli(override, disablerepo):
     """Layered Package Manager"""
