@@ -9,8 +9,7 @@ base = dnf.base
 
 def command_info(package_name):
     query = base.sack.query()
-    pkg = query.available()
-    pkg = pkg.filter(name=package_name)
+    pkg = query.filter(name=package_name)
     pkg = pkg.run()
 
     if not pkg:
@@ -37,17 +36,12 @@ def command_info(package_name):
     table.add_row("Summary", pkg.summary)
     table.add_row("URL", pkg.url)
     table.add_row("License", pkg.license)
-    table.add_row("", "")
-    table.add_row("Description", pkg.description)
-
-    # I blame libdnf
-
-    # if not pkg.installed:
-    #     table.add_row("Installed", "No")
-    
+    table.add_row("Installed", str(pkg.installed))
     if not pkg.group == "Unspecified":
         table.add_row("Group", pkg.group)
-
+    table.add_row("", "")
+    table.add_row("Description", pkg.description)
+    
     console.print(table)
 
     
