@@ -1,18 +1,20 @@
 import dnf
 from rich.progress import Progress, SpinnerColumn, DownloadColumn, TransferSpeedColumn
+from rich.console import Console
 
 # TODO this really really needs to use rich.progress
 # https://dnf.readthedocs.io/en/latest/api_callback.html
 # https://rich.readthedocs.io/en/latest/progress.html
 
+console = Console()
+
 progress = Progress(
     SpinnerColumn(),
     *Progress.get_default_columns(),
     DownloadColumn(),
-    TransferSpeedColumn(),
+    TransferSpeedColumn()
 )
 progress.__enter__()
-
 
 class ProgressMetre(dnf.callback.DownloadProgress):
     """Multi-file download progess metre"""
@@ -24,12 +26,17 @@ class ProgressMetre(dnf.callback.DownloadProgress):
         self.tasks = {}
         self.download_size = {}
 
+        self.done_size = 0
+        self.done_files = 0
+
     def start(self, total_files, total_size, total_drpms=0):
         self.total_files = total_files
         self.total_size = total_size
         self.total_drpm = total_drpms
         self.tasks = {}
         self.download_size = {}
+
+        progress.start()
 
     def progress(self, payload, done):
         name = payload.__str__()
@@ -45,6 +52,14 @@ class ProgressMetre(dnf.callback.DownloadProgress):
 
     def end(self, payload, status, err_msg):
         payload_size = self.download_size.get(payload.__str__(), 0)
+        
+
+        if progress.finished == True:
+            progress.stop()
+
+        if err_msg:
+            console.print(f"{err_msg}")
+
         progress.update(
             self.tasks[payload.__str__()],
             completed=payload_size,
