@@ -14,6 +14,8 @@ error_console = Console(stderr=True, style="bold red")
 @click.version_option("0.1.0")
 def cli(override, disablerepo):
     """Layered Package Manager"""
+    dnf_utils.setup_handlers()
+    
     if override:
         # TODO this should be able to be disabled with something like --override=true
         console.print("[bold red]WARNING![/bold red] The [italic]--override[/italic] flag makes changes to your base system." , style="bold")
