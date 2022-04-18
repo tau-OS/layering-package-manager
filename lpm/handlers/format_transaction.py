@@ -1,6 +1,6 @@
-import click
 from rich.console import Console
 from rich.table import Table
+from rich.prompt import Confirm
 from lpm import dnf
 from lpm.utils import HumanBytes
 
@@ -57,4 +57,6 @@ def format_transaction_summary():
         console.print(f"Total download size: {HumanBytes.format(total_download_size)}")
     console.print(f"Total {transaction_type} size: {HumanBytes.format(total_installed_size)}")
 
-    click.confirm('Do you understand?', abort=True)
+    if not Confirm.ask("Is this ok?"):
+        error_console.print("Transaction cancelled")
+        exit()
