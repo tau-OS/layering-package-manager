@@ -2,6 +2,7 @@ import click
 from rich.console import Console
 from lpm.commands.search import command_search
 from lpm.commands.info import command_info
+from lpm.commands.install import command_install
 from lpm import dnf as dnf_utils
 import dnf
 
@@ -37,9 +38,10 @@ def cli(override, disablerepo):
     dnf_utils.base.fill_sack()
 
 @cli.command()
-def install():
+@click.argument('package')
+def install(package):
     """Overlay additional packages"""
-    click.echo("Test!")
+    command_install(package)
 
 @cli.command()
 def remove():
