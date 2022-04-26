@@ -4,7 +4,7 @@ Name:           layering-package-manager
 Version:        0.0.1
 Release:        1%{?dist}
 Summary:        Layering Package Manager
-License:        MIT
+License:        GPL3
 URL:            https://tauos.co
 # TODO add url
 Source0:        %{modname}-%{version}.tar.gz
