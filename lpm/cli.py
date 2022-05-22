@@ -5,6 +5,11 @@ from lpm.commands.info import command_info
 from lpm.commands.install import command_install
 from lpm.commands.remove import command_remove
 from lpm.commands.update import command_update
+from lpm.commands.groups.info import command_group_info
+from lpm.commands.groups.install import command_group_install
+from lpm.commands.groups.remove import command_group_remove
+from lpm.commands.groups.search import command_group_search
+from lpm.commands.groups.update import command_group_update
 from lpm import dnf as dnf_utils
 import dnf
 
@@ -38,6 +43,7 @@ def cli(override, disablerepo):
 
     # THIS MUST BE LAST
     dnf_utils.base.fill_sack()
+    dnf_utils.base.read_comps()
 
 @cli.command()
 @click.argument('package')
@@ -74,3 +80,37 @@ def rollback():
 def update(package):
     """Upgrade a single package or all the packages on your system"""
     command_update(package)
+
+@cli.group()
+def groups():
+    """Manage groups"""
+
+@groups.command()
+@click.argument('group')
+def install(group):
+    """Overlay group"""
+    command_group_install(group)
+
+@groups.command()
+@click.argument('group')
+def remove(group):
+    """Remove overlayed groups"""
+    command_group_remove(group)
+
+@groups.command()
+@click.argument('keyword')
+def search(keyword):
+    """Search groups for the given string"""
+    command_group_search(keyword)
+
+@groups.command()
+@click.argument('group')
+def info(group):
+    """Display details about a group"""
+    command_group_info(group)
+
+@groups.command()
+@click.argument('group')
+def update(group):
+    """Upgrade a single group"""
+    command_group_update(group)

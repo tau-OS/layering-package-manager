@@ -1,6 +1,8 @@
 import dnf
 from lpm.handlers.progress import ProgressMetre
 
+comps = dnf.comps
+exceptions = dnf.exceptions
 base = dnf.Base()
 base.read_all_repos()
 
