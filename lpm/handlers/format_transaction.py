@@ -9,6 +9,7 @@ error_console = Console(stderr=True, style="bold red")
 
 base = dnf.base
 
+
 def format_transaction_summary():
     if not base.transaction.install_set and not base.transaction.remove_set:
         error_console.print(f"No packages in transaction")
@@ -30,7 +31,13 @@ def format_transaction_summary():
         table.add_row("[white]Packages to install:[/white]", "", "", "", "")
         table.add_row("", "", "", "", "")
         for pkg in base.transaction.install_set:
-            table.add_row(f"[green]{pkg.name}[/green]", pkg.version, pkg.arch, pkg.reponame, HumanBytes.format(pkg.downloadsize))
+            table.add_row(
+                f"[green]{pkg.name}[/green]",
+                pkg.version,
+                pkg.arch,
+                pkg.reponame,
+                HumanBytes.format(pkg.downloadsize),
+            )
             total_download_size += pkg.downloadsize
             total_installed_size += pkg.installsize
     if base.transaction.remove_set:
@@ -38,20 +45,34 @@ def format_transaction_summary():
         table.add_row("[white]Packages to remove:[/white]", "", "", "", "")
         table.add_row("", "", "", "", "")
         for pkg in base.transaction.remove_set:
-            table.add_row(f"[red]{pkg.name}[/red]", pkg.version, pkg.arch, pkg.reponame, HumanBytes.format(pkg.installsize))
+            table.add_row(
+                f"[red]{pkg.name}[/red]",
+                pkg.version,
+                pkg.arch,
+                pkg.reponame,
+                HumanBytes.format(pkg.installsize),
+            )
             total_installed_size += pkg.installsize
 
     console.print(table)
 
     if base.transaction.install_set:
-        console.print(f"Total packages to install: {str(len(base.transaction.install_set))}")
+        console.print(
+            f"Total packages to install: {str(len(base.transaction.install_set))}"
+        )
 
     if base.transaction.remove_set:
-        console.print(f"Total packages to remove: {str(len(base.transaction.remove_set))}")
+        console.print(
+            f"Total packages to remove: {str(len(base.transaction.remove_set))}"
+        )
 
     if total_download_size != 0:
         console.print(f"Total download size: {HumanBytes.format(total_download_size)}")
-    console.print(f"Total {transaction_type} size: {HumanBytes.format(total_installed_size)}")
+    console.print(
+        f"Total {transaction_type} size: {HumanBytes.format(total_installed_size)}"
+    )
+
+    console.print()
 
     if not Confirm.ask("Is this ok?"):
         error_console.print("Transaction cancelled")

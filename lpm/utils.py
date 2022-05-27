@@ -1,7 +1,20 @@
+import asyncio
+import functools
 from typing import List, Union
 
+
 class HumanBytes:
-    BINARY_LABELS: List[str] = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
+    BINARY_LABELS: List[str] = [
+        "B",
+        "KiB",
+        "MiB",
+        "GiB",
+        "TiB",
+        "PiB",
+        "EiB",
+        "ZiB",
+        "YiB",
+    ]
 
     @staticmethod
     def format(num: Union[int, float]) -> str:
@@ -18,7 +31,7 @@ class HumanBytes:
         unit_step_thresh = unit_step - 0.05
 
         is_negative = num < 0
-        if is_negative: # Faster than ternary assignment or always running abs().
+        if is_negative:  # Faster than ternary assignment or always running abs().
             num = abs(num)
 
         for unit in unit_labels:
@@ -38,3 +51,11 @@ class HumanBytes:
                 num /= unit_step
 
         return "{}{:.1f} {}".format("-" if is_negative else "", num, unit)
+
+
+def make_sync(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return asyncio.run(func(*args, **kwargs))
+
+    return wrapper

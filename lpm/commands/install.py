@@ -1,13 +1,14 @@
 from rich.console import Console
 from lpm import dnf
 from lpm.handlers.format_transaction import format_transaction_summary
+from lpm.handlers.update_packages import update_packages
 
 console = Console()
 error_console = Console(stderr=True, style="bold red")
 base = dnf.base
 
 
-def command_install(package_name):
+async def command_install(package_name):
     query = base.sack.query()
     results = query.installed()
     results = results.filter(name=package_name)
@@ -28,3 +29,4 @@ def command_install(package_name):
         exit()
 
     format_transaction_summary()
+    await update_packages()

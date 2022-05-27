@@ -30,7 +30,7 @@ async def new_rpm_ostree_interface():
     booted = booted_proxy.get_interface("org.projectatomic.rpmostree1.OS")
 
     booted_experimental = booted_proxy.get_interface(
-        "org.projectatomic.rpmostree1.OS.Experimental"
+        "org.projectatomic.rpmostree1.OSExperimental"
     )
 
     return booted, booted_experimental
