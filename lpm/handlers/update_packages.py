@@ -33,6 +33,7 @@ def new_transaction_peer_interface(address: str):
     return (
         dbus.Interface(proxy, "org.projectatomic.rpmostree1.Transaction"),
         dbus.Interface(proxy, "org.freedesktop.DBus.Properties"),
+        conn,
     )
 
 
@@ -51,7 +52,9 @@ async def update_packages():
         list(map(lambda x: x.name, base.transaction.remove_set)),
     )
 
-    (peer_interface, peer_properties) = new_transaction_peer_interface(peer_socket)
+    (peer_interface, peer_properties, peer_conn) = new_transaction_peer_interface(
+        peer_socket
+    )
 
     loop = GLib.MainLoop()
     finished_event = asyncio.Event()
@@ -67,13 +70,13 @@ async def update_packages():
         print(text)
 
     def task_begin_cb(text: str):
-        pass
+        print("oworking...")
 
     def task_end_cb(text: str):
-        pass
+        print("nyoking...")
 
     def percent_progress_cb(text: str, percentage: int):
-        pass
+        print("pero...")
 
     def download_progress_cb(
         time: Tuple[int, int],
@@ -83,23 +86,38 @@ async def update_packages():
         content: Tuple[int, int],
         transfer: Tuple[int, int],
     ):
-        pass
+        print("gura...")
 
     def signature_progress_db(signature: list[any], commit: str):
-        pass
+        print("fsdfds...")
 
     def progress_end_db():
-        pass
+        print("I love jade...")
 
-    peer_interface.connect_to_signal("Finished", finished_cb)
-    peer_interface.connect_to_signal("Message", message_cb)
-    peer_interface.connect_to_signal("TaskBegin", task_begin_cb)
-    peer_interface.connect_to_signal("TaskEnd", task_end_cb)
-    peer_interface.connect_to_signal("PercentProgress", percent_progress_cb)
-    peer_interface.connect_to_signal("DownloadProgress", download_progress_cb)
-    peer_interface.connect_to_signal("SignatureProgress", signature_progress_db)
-    peer_interface.connect_to_signal("ProgressEnd", progress_end_db)
+    peer_conn.add_signal_receiver(
+        signal_name="Finished",
+        handler_function=finished_cb,
+    )
 
-    print(peer_interface.Start())
+    peer_conn.add_signal_receiver(signal_name="Message", handler_function=message_cb)
+    peer_conn.add_signal_receiver(
+        signal_name="TaskBegin", handler_function=task_begin_cb
+    )
+    peer_conn.add_signal_receiver(signal_name="TaskEnd", handler_function=task_end_cb)
+    peer_conn.add_signal_receiver(
+        signal_name="PercentProgress", handler_function=percent_progress_cb
+    )
+    peer_conn.add_signal_receiver(
+        signal_name="DownloadProgress", handler_function=download_progress_cb
+    )
+    peer_conn.add_signal_receiver(
+        signal_name="SignatureProgress", handler_function=signature_progress_db
+    )
+    peer_conn.add_signal_receiver(
+        signal_name="ProgressEnd", handler_function=progress_end_db
+    )
+
+    # TODO: Handle this
+    peer_interface.Start()
 
     await finished_event.wait()
