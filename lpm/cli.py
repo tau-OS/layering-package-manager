@@ -61,11 +61,11 @@ def cli(override, disablerepo):
 
 
 @cli.command()
-@click.argument("package")
+@click.argument("packages", nargs=-1, required=True)
 @make_sync
-async def install(package):
+async def install(packages):
     """Overlay additional packages"""
-    await command_install(package)
+    await command_install(packages)
 
 
 @cli.command()
