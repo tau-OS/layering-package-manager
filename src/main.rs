@@ -2,7 +2,7 @@
 
 use clap::{Parser, Subcommand};
 use rpm_ostree::{OSProxyBlocking, SysrootProxyBlocking};
-use std::{collections::HashMap, ffi::OsString, process::exit};
+use std::collections::HashMap;
 use zbus::blocking::Connection;
 
 mod rpm_ostree;
@@ -75,8 +75,8 @@ async fn main() -> anyhow::Result<()> {
             transaction.start().await?;
             transaction::handle_transaction(&transaction).await?;
         }
-        Commands::Search { name } => {}
-        Commands::Info { name } => {}
+        Commands::Search { name: _ } => {}
+        Commands::Info { name: _ } => {}
     }
 
     Ok(())

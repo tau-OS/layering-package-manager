@@ -4,10 +4,9 @@ use async_std::stream::StreamExt;
 use futures_util::join;
 use indicatif::{ProgressBar, ProgressStyle};
 use std::{
-    cell::{Ref, RefCell},
+    cell::RefCell,
     os::unix::net::{SocketAddr, UnixStream},
     process::exit,
-    rc::Rc,
     time::Duration,
 };
 
@@ -22,11 +21,11 @@ pub async fn handle_transaction(transaction: &TransactionProxy<'_>) -> Result<()
 
     let mut signals = Signals::new(vec![2, 15]).unwrap();
 
-    let mut bar: RefCell<Option<ProgressBar>> = RefCell::new(None);
+    let bar: RefCell<Option<ProgressBar>> = RefCell::new(None);
 
     join!(
         async {
-            while let Some(message) = receive_message.next().await {
+            while let Some(_) = receive_message.next().await {
                 // let args = message.args().unwrap();
                 // println!("{}", args.text);
             }
@@ -54,7 +53,7 @@ pub async fn handle_transaction(transaction: &TransactionProxy<'_>) -> Result<()
             }
         },
         async {
-            while let Some(message) = receive_download_progress.next().await {
+            while let Some(_) = receive_download_progress.next().await {
                 // println!("{:#?}", message.args().unwrap().time());
             }
         },
@@ -174,11 +173,9 @@ pub async fn handle_transaction(transaction: &TransactionProxy<'_>) -> Result<()
             }
         },
         async {
-            while let Some(message) = receive_task_end.next().await {
-                let args = message.args().unwrap();
+            while let Some(_) = receive_task_end.next().await {
                 let bar = bar.take().unwrap();
                 bar.finish();
-                // println!("{}", args.text);
             }
         },
         async {
