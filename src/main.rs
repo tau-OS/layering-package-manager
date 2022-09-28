@@ -17,8 +17,14 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    Install { name: Vec<String> },
-    Remove { name: Vec<String> },
+    Install {
+        #[clap(required = true)]
+        names: Vec<String>
+    },
+    Remove {
+        #[clap(required = true)]
+        names: Vec<String>
+    },
     Search { name: String },
     Info { name: String },
     Update {},
@@ -42,11 +48,11 @@ async fn main() -> anyhow::Result<()> {
 
     let connection = Connection::system().await?;
     match &cli.command {
-        Commands::Install { name } => {
+        Commands::Install { names } => {
             let sysroot = rpm_ostree::SysrootProxy::new(&connection).await?;
             let proxy = get_os_proxy(&sysroot).await?;
 
-            let packages = name.iter().map(|s| s.as_str()).collect::<Vec<&str>>();
+            let packages = names.iter().map(|s| s.as_str()).collect::<Vec<&str>>();
             let transaction_address = proxy
                 .pkg_change(HashMap::new(), packages.as_slice(), &[])
                 .await?;
@@ -55,11 +61,11 @@ async fn main() -> anyhow::Result<()> {
             transaction.start().await?;
             transaction::handle_transaction(&transaction).await?;
         }
-        Commands::Remove { name } => {
+        Commands::Remove { names } => {
             let sysroot = rpm_ostree::SysrootProxy::new(&connection).await?;
             let proxy = get_os_proxy(&sysroot).await?;
 
-            let packages = name.iter().map(|s| s.as_str()).collect::<Vec<&str>>();
+            let packages = names.iter().map(|s| s.as_str()).collect::<Vec<&str>>();
             let transaction_address = proxy
                 .pkg_change(HashMap::new(), &[], packages.as_slice())
                 .await?;
